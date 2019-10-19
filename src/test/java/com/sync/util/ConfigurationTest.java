@@ -7,24 +7,24 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class ProjectConfigurationTest {
+public class ConfigurationTest {
 
     private final String VALID_CONFIG_PROPERTIES = "src/test/resources/config.properties";
-    private ProjectConfiguration sut;
+    private Configuration sut;
 
     @Before
     public void setUp() {
-        sut = new ProjectConfiguration(VALID_CONFIG_PROPERTIES);
+        sut = new Configuration(VALID_CONFIG_PROPERTIES);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void givenEmptyPathToPropertyThenThrowRuntime() {
-        sut = new ProjectConfiguration("");
+        sut = new Configuration("");
     }
 
     @Test(expected = InvalidConfigurationFileException.class)
     public void givenInvalidPathToPropertyThenThrowRuntime() {
-        sut = new ProjectConfiguration("~/file.json");
+        sut = new Configuration("~/file.json");
     }
 
     @Test

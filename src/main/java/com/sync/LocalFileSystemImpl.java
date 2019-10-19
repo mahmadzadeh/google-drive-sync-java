@@ -9,14 +9,12 @@ import java.util.stream.Collectors;
 public class LocalFileSystemImpl implements LocalFileSystem {
 
     @Override
-    public Collection<File> listFilesInDir(String dir) {
+    public Collection<File> listFilesInDir(File dir) {
 
-        java.io.File direc = new java.io.File(dir);
-
-        if (!direc.isDirectory()) {
+        if (!dir.isDirectory()) {
             return Collections.emptySet();
         }
 
-        return Arrays.stream(direc.listFiles()).collect(Collectors.toSet());
+        return Arrays.stream(dir.listFiles()).collect(Collectors.toSet());
     }
 }

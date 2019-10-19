@@ -22,7 +22,7 @@ public class GoogleDriveSync {
         this.localFs = localFs;
     }
 
-    public Set<SyncableFile> getLocalFilesToSync(String syncDir) {
+    public Set<SyncableFile> getLocalFilesToSync(java.io.File syncDir) {
         return localFs.listFilesInDir(syncDir)
                 .stream().
                         map(f -> {

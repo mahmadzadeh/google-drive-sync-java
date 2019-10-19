@@ -5,5 +5,5 @@ import java.util.Collection;
 
 public interface LocalFileSystem {
 
-    Collection<File> listFilesInDir(String dir);
+    Collection<File> listFilesInDir(File dir);
 }

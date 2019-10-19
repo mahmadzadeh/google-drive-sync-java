@@ -33,9 +33,6 @@ public class ServerBuilderContractImpl implements ServerBuilderContract {
             DriveScopes.DRIVE_METADATA,
             DriveScopes.DRIVE);
 
-    public static final String DRIVE_DIR_NAME = "home_computer";
-    public static final String SYNC_DIR = "/home/mahmadzadeh/Documents/synced_google_drive";
-
     @Override
     public Credential getCredentials(NetHttpTransport httpTransport, File credsFilePath)  {
         return getCredes(httpTransport, credsFilePath);
