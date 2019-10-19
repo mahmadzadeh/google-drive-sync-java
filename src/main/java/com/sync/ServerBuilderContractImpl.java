@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ServerBuilderContractImpl implements ServerBuilderContract {
-    private static final String APPLICATION_NAME = "Saysun Software";
+
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
@@ -39,10 +39,10 @@ public class ServerBuilderContractImpl implements ServerBuilderContract {
     }
 
     @Override
-    public Drive createInstance( NetHttpTransport httpTransport, Credential credential ) {
+    public Drive createInstance(NetHttpTransport httpTransport, Credential credential, String applicationName) {
 
         Drive service = new Drive.Builder( httpTransport, JSON_FACTORY, credential )
-                .setApplicationName( APPLICATION_NAME )
+                .setApplicationName(applicationName)
                 .build();
 
         return service;

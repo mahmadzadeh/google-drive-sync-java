@@ -13,6 +13,7 @@ public class Configuration {
     public static final String CREDENTIAL_FILE_PATH = "credential.file.path";
     public static final String LOCAL_SYNC_FOLDER = "local.sync.folder";
     public static final String REMOTE_FOLDER_NAME = "remote.sync.folder";
+    public static final String APPLICATION_NAME = "app.name";
 
     private final Properties props;
 
@@ -53,13 +54,19 @@ public class Configuration {
         return getProperty(REMOTE_FOLDER_NAME);
     }
 
+    public Optional<String> getApplicationName() {
+        return getProperty(APPLICATION_NAME);
+    }
+
     public ProjectSettings convertToSettings() {
         String credsFilePath = getCredentialFilePath().orElse("");
         String localFolderToSync = getLocalFolderToSync().orElse("");
         String remoteFilePath = getRemoteFolder().orElse("");
+        String appName = getRemoteFolder().orElse("Saysun Apps");
 
         return ProjectSettings
                 .INSTANCE()
+                .withAppName(appName)
                 .withCredentialFilePath(credsFilePath)
                 .withLocalFolderToSync(localFolderToSync)
                 .withRemoteFolderName(remoteFilePath);

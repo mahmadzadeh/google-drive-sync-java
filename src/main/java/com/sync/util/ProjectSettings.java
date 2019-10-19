@@ -10,6 +10,8 @@ public class ProjectSettings {
     private File localFolderToSync;
     private String remoteFolderName;
 
+    private String appName;
+
     private ProjectSettings() {
     }
 
@@ -37,6 +39,10 @@ public class ProjectSettings {
         return credentialFilePath;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
     public File getLocalFolderToSync() {
         return localFolderToSync;
     }
@@ -52,5 +58,10 @@ public class ProjectSettings {
         }
 
         return f;
+    }
+
+    public ProjectSettings withAppName(String appName) {
+        this.appName = appName;
+        return this;
     }
 }

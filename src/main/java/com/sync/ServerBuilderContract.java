@@ -33,5 +33,5 @@ public interface ServerBuilderContract {
 
     Credential getCredentials( final NetHttpTransport httpTransport , java.io.File credsFilePath ) ;
 
-    Drive createInstance(NetHttpTransport HTTP_TRANSPORT, Credential credential);
+    Drive createInstance(NetHttpTransport HTTP_TRANSPORT, Credential credential, String applicationName);
 }

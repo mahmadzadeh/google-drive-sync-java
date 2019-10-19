@@ -34,7 +34,7 @@ public class GoogleDriveSyncMain {
         final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         ServerBuilderContract serverBuilderContract = new ServerBuilderContractImpl();
         Drive service = serverBuilderContract.createInstance(httpTransport, serverBuilderContract.getCredentials(httpTransport,
-                settings.getCredentialFilePath()));
+                settings.getCredentialFilePath()), settings.getAppName());
 
         GoogleDriveSync mySync = new GoogleDriveSync(service, new LocalFileSystemImpl());
 
