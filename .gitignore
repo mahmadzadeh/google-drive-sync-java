@@ -1,0 +1,9 @@
+/.gradle/
+/.idea/
+/build/
+/tokens/
+/bfg-1.13.0.jar
+/google-drive-sync-java.iml
+/gradlew
+/gradlew.bat
+/gradle/
