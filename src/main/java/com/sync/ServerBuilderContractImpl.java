@@ -48,7 +48,6 @@ public class ServerBuilderContractImpl implements ServerBuilderContract {
         return service;
     }
 
-
     private Credential getCredes(final NetHttpTransport HTTP_TRANSPORT, File credsFilePath)  {
 
         GoogleClientSecrets clientSecrets;

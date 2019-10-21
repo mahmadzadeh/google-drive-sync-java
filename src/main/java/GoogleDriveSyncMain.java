@@ -7,42 +7,28 @@ import com.sync.util.ProjectSettings;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Set;
 
 public class GoogleDriveSyncMain {
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
 
         if (args.length == 0) {
-            log("Invalid usage. GoogleDriveSyncMain [PATH-TO-CONFIGURATION-FILE]");
+            log("Invalid usage. GoogleDriveSyncMain [ABSOLUTE-PATH-TO-CONFIGURATION-FILE]");
             System.exit(-1);
         }
 
-        /**
-         * MySync
-         * .instance(Properties)
-         * .checkRequirements()
-         * .initializeDrive()
-         * .showWhatWillBeSynced()
-         * .sync()
-         *
-         */
-
         ProjectSettings settings = new Configuration(args[0]).convertToSettings();
 
-        //Build a new authorized API client service.
-        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         ServerBuilderContract serverBuilderContract = new ServerBuilderContractImpl();
+        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Drive service = serverBuilderContract.createInstance(httpTransport, serverBuilderContract.getCredentials(httpTransport,
                 settings.getCredentialFilePath()), settings.getAppName());
 
-        GoogleDriveSync mySync = new GoogleDriveSync(service, new LocalFileSystemImpl());
-
-        Set<SyncableFile> fileSet = mySync.getLocalFilesToSync(settings.getLocalFolderToSync());
+        GoogleDriveSync mySync = new GoogleDriveSync(new LocalFileSystemImpl(), new RemoteFileSystemImpl(service));
 
         mySync.dropExistingRemoteFolder(settings.getRemoteFolderName());
 
-        mySync.sync(fileSet, mySync.createFreshRemoteFolder(settings.getRemoteFolderName()));
+        mySync.sync(settings.getLocalFolderToSync(), mySync.createFreshRemoteFolder(settings.getRemoteFolderName()));
 
     }
 

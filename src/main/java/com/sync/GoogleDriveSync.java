@@ -1,9 +1,7 @@
 package com.sync;
 
 import com.google.api.client.http.FileContent;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -13,13 +11,13 @@ import java.util.stream.Collectors;
 
 public class GoogleDriveSync {
 
-    private final Drive remoteFs;
     private final LocalFileSystem localFs;
+    private final RemoteFileSystem remoteFss;
 
-    public GoogleDriveSync(Drive remoteFs, LocalFileSystem localFs) {
+    public GoogleDriveSync(LocalFileSystem localFs, RemoteFileSystem remoteFss) {
 
-        this.remoteFs = remoteFs;
         this.localFs = localFs;
+        this.remoteFss = remoteFss;
     }
 
     public Set<SyncableFile> getLocalFilesToSync(java.io.File syncDir) {
@@ -36,101 +34,37 @@ public class GoogleDriveSync {
 
     }
 
-    public void dropExistingRemoteFolder(String remoteFolderName) throws IOException {
-        getParentDir(remoteFolderName)
-                .ifPresent(f -> deleteFolder(f.getId()));
+    public void dropExistingRemoteFolder(String remoteFolderName) {
+        remoteFss.getParentFolder(remoteFolderName)
+                .ifPresent(f -> remoteFss.deleteFolder(f.getId()));
     }
 
     public File createFreshRemoteFolder(String remoteFolderName)  {
-        return createFolder( remoteFolderName );
+        return remoteFss.createFolder( remoteFolderName );
+    }
+
+    public void sync(java.io.File localFolder, File remoteFolder) {
+        getLocalFilesToSync(localFolder).stream().forEach( file -> syncToRemoteFolder(remoteFolder, file));
     }
 
     public void sync(Set<SyncableFile> fileSet, File remoteFolder) {
+        fileSet.stream().forEach( file -> syncToRemoteFolder(remoteFolder, file));
+    }
 
-        fileSet.stream().forEach( file -> {
+    private void syncToRemoteFolder(File remoteFolder, SyncableFile file) {
+        File metaData = new File();
+        metaData.setName(file.getFile().getName());
+        metaData.setParents(Collections.singletonList(remoteFolder.getId()));
 
-            File metaData = new File();
-            metaData.setName( file.getFile().getName() );
-            metaData.setParents( Collections.singletonList( remoteFolder.getId() ) );
+        FileContent content = new FileContent(file.getExtension().getMimeType(), file.getFile());
 
-            FileContent content = new FileContent( file.getExtension().getMimeType(), file.getFile() );
+        File savedFile = remoteFss.createFile(metaData, content);
 
-            File savedFile = createFile( metaData, content );
-
-            log( savedFile );
-        } );
+        log(savedFile);
     }
 
     private void log(File savedFile) {
         System.out.println(savedFile);
-    }
-
-    private Optional<File> getParentDir(String driveDirName) {
-
-        FileList result = null;
-        try {
-            result = remoteFs.files().list()
-                    .setQ("mimeType = 'application/vnd.google-apps.folder' and trashed = false")
-                    .setSpaces("drive")
-                    .setFields("nextPageToken, files(id, name)")
-                    .execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        for (File f : result.getFiles()) {
-            if (f.getName().equals(driveDirName)) {
-                return Optional.of(f);
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    private void deleteFolder(String id) {
-
-        try {
-            remoteFs.files().delete(id)
-                    .setFields("id")
-                    .execute();
-        } catch (IOException e) {
-            throw new RemoteFileCreationException("Exception while uploading: " + id, e);
-        }
-
-        return;
-    }
-
-    private File createFolder( String removeDriveDirName ) {
-        File fileMetadata = new File();
-        fileMetadata.setName( removeDriveDirName );
-        fileMetadata.setMimeType( "application/vnd.google-apps.folder" );
-
-        File file;
-        try {
-            file = remoteFs.files().create( fileMetadata )
-                    .setFields( "id" )
-                    .execute();
-        } catch ( IOException e ) {
-            throw new RemoteFileCreationException( "Exception while creating remote folder: " + removeDriveDirName, e );
-        }
-
-        return file;
-    }
-
-    private  File createFile( File fileMetaData, FileContent content )  {
-
-        File file;
-
-        try {
-            file = remoteFs.files().create( fileMetaData, content )
-                    .setFields( "id, parents" )
-                    .execute();
-        } catch ( IOException e ) {
-            throw new RemoteFileCreationException("Exception while uploading: " + fileMetaData.getName()
-                    + " with mime type " + content.getType() , e);
-        }
-
-        return file;
     }
 
 }
