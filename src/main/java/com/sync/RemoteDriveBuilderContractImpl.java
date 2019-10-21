@@ -19,11 +19,15 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class ServerBuilderContractImpl implements ServerBuilderContract {
+public class RemoteDriveBuilderContractImpl implements RemoteDriveBuilderContract {
 
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
+    private final NetHttpTransport httpTransport;
 
+    public RemoteDriveBuilderContractImpl(NetHttpTransport httpTransport) {
+        this.httpTransport = httpTransport;
+    }
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
@@ -34,14 +38,14 @@ public class ServerBuilderContractImpl implements ServerBuilderContract {
             DriveScopes.DRIVE);
 
     @Override
-    public Credential getCredentials(NetHttpTransport httpTransport, File credsFilePath)  {
-        return getCredes(httpTransport, credsFilePath);
+    public Credential getCredentials(File credsFilePath)  {
+        return getCredes(this.httpTransport, credsFilePath);
     }
 
     @Override
-    public Drive createInstance(NetHttpTransport httpTransport, Credential credential, String applicationName) {
+    public Drive createInstance(Credential credential, String applicationName) {
 
-        Drive service = new Drive.Builder( httpTransport, JSON_FACTORY, credential )
+        Drive service = new Drive.Builder( this.httpTransport, JSON_FACTORY, credential )
                 .setApplicationName(applicationName)
                 .build();
 

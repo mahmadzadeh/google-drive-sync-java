@@ -77,7 +77,7 @@ public class GoogleDriveSyncTest {
     }
 
     /**
-     * Only include files of mapped extension @{@link SupportedFileExtensions}
+     * Only include files of mapped extension @{@link SupportedFileExtension}
      */
     @Test
     public void getLocalFilesToSyncSunnyDay() {

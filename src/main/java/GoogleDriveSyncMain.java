@@ -1,5 +1,4 @@
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.drive.Drive;
 import com.sync.*;
 import com.sync.util.Configuration;
@@ -19,10 +18,9 @@ public class GoogleDriveSyncMain {
 
         ProjectSettings settings = new Configuration(args[0]).convertToSettings();
 
-        ServerBuilderContract serverBuilderContract = new ServerBuilderContractImpl();
-        final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Drive service = serverBuilderContract.createInstance(httpTransport, serverBuilderContract.getCredentials(httpTransport,
-                settings.getCredentialFilePath()), settings.getAppName());
+        RemoteDriveBuilderContract builder = new RemoteDriveBuilderContractImpl(GoogleNetHttpTransport.newTrustedTransport());
+
+        Drive service = builder.createInstance(builder.getCredentials(settings.getCredentialFilePath()), settings.getAppName());
 
         GoogleDriveSync mySync = new GoogleDriveSync(new LocalFileSystemImpl(), new RemoteFileSystemImpl(service));
 

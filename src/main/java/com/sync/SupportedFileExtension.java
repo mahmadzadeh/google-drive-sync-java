@@ -9,7 +9,7 @@ import java.util.Optional;
  *
  * http://kinlane.com/2011/02/23/file-formats-for-google-docs-api/
  */
-public enum SupportedFileExtensions {
+public enum SupportedFileExtension {
 
     gif ("gif" ,"image/gif","Graphics Interchange Format") ,
     odt ("odt" ,"application/vnd.openxmlformats-officedocument.wordprocessingml.document","Open Document Format"),
@@ -35,17 +35,17 @@ public enum SupportedFileExtensions {
     private final String mimeType;
     private final String desc;
 
-    SupportedFileExtensions(String name, String mimeType, String desc) {
+    SupportedFileExtension(String name, String mimeType, String desc) {
 
         this.name = name;
         this.mimeType = mimeType;
         this.desc = desc;
     }
 
-    public static Optional<SupportedFileExtensions> fromFileName( String fileName ) {
+    public static Optional<SupportedFileExtension> fromFileName(String fileName ) {
         String extension = FilenameUtils.getExtension( fileName );
 
-        for ( SupportedFileExtensions ext : SupportedFileExtensions.values() ) {
+        for ( SupportedFileExtension ext : SupportedFileExtension.values() ) {
             if ( ext.isEqualTo( extension ) ) {
                 return Optional.of( ext );
             }

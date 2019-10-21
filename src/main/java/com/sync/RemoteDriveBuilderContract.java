@@ -29,9 +29,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.io.IOException;
 
-public interface ServerBuilderContract {
+public interface RemoteDriveBuilderContract {
 
-    Credential getCredentials( final NetHttpTransport httpTransport , java.io.File credsFilePath ) ;
+    Credential getCredentials(java.io.File credsFilePath) ;
 
-    Drive createInstance(NetHttpTransport HTTP_TRANSPORT, Credential credential, String applicationName);
+    Drive createInstance(Credential credential, String applicationName);
 }

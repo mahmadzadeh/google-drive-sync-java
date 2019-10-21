@@ -5,9 +5,9 @@ import java.io.File;
 public class SyncableFile {
 
     private final File file;
-    private final SupportedFileExtensions extension;
+    private final SupportedFileExtension extension;
 
-    public SyncableFile( File file, SupportedFileExtensions extension ) {
+    public SyncableFile( File file, SupportedFileExtension extension ) {
         this.file = file;
         this.extension = extension;
     }
@@ -16,7 +16,7 @@ public class SyncableFile {
         return file;
     }
 
-    public SupportedFileExtensions getExtension() {
+    public SupportedFileExtension getExtension() {
         return extension;
     }
 

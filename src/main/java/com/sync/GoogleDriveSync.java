@@ -3,7 +3,6 @@ package com.sync;
 import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.model.File;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -12,19 +11,19 @@ import java.util.stream.Collectors;
 public class GoogleDriveSync {
 
     private final LocalFileSystem localFs;
-    private final RemoteFileSystem remoteFss;
+    private final RemoteFileSystem remoteFs;
 
-    public GoogleDriveSync(LocalFileSystem localFs, RemoteFileSystem remoteFss) {
+    public GoogleDriveSync(LocalFileSystem localFs, RemoteFileSystem remoteFs) {
 
         this.localFs = localFs;
-        this.remoteFss = remoteFss;
+        this.remoteFs = remoteFs;
     }
 
     public Set<SyncableFile> getLocalFilesToSync(java.io.File syncDir) {
         return localFs.listFilesInDir(syncDir)
                 .stream().
                         map(f -> {
-                            Optional<SupportedFileExtensions> fileExtensions = SupportedFileExtensions.fromFileName(f.getName());
+                            Optional<SupportedFileExtension> fileExtensions = SupportedFileExtension.fromFileName(f.getName());
                             return fileExtensions.isPresent()
                                     ? new com.sync.SyncableFile(f, fileExtensions.get())
                                     : null;
@@ -35,12 +34,12 @@ public class GoogleDriveSync {
     }
 
     public void dropExistingRemoteFolder(String remoteFolderName) {
-        remoteFss.getParentFolder(remoteFolderName)
-                .ifPresent(f -> remoteFss.deleteFolder(f.getId()));
+        remoteFs.getParentFolder(remoteFolderName)
+                .ifPresent(f -> remoteFs.deleteFolder(f.getId()));
     }
 
     public File createFreshRemoteFolder(String remoteFolderName)  {
-        return remoteFss.createFolder( remoteFolderName );
+        return remoteFs.createFolder( remoteFolderName );
     }
 
     public void sync(java.io.File localFolder, File remoteFolder) {
@@ -58,7 +57,7 @@ public class GoogleDriveSync {
 
         FileContent content = new FileContent(file.getExtension().getMimeType(), file.getFile());
 
-        File savedFile = remoteFss.createFile(metaData, content);
+        File savedFile = remoteFs.createFile(metaData, content);
 
         log(savedFile);
     }
